@@ -9,7 +9,7 @@ The project was built without frameworks or external libraries to demonstrate co
 
 ## Screenshot
 
-![TeamBase Employee Dashboard](./screenshot.png)
+![TeamBase Employee Dashboard](./teambase-employee-dashboard/screenshot.png)
 
 ---
 
