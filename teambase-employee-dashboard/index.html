@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamBase — Employee Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">TB</span>
+      <span class="brand-name">TeamBase</span>
+    </div>
+
+    <nav class="side-nav">
+      <a class="side-nav-item active" href="#">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        Directory
+      </a>
+    </nav>
+
+    <div class="side-foot">
+      <p>Records are stored in this browser only.</p>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1>Employee Directory</h1>
+        <p class="sub">Add, search, and manage your team's records.</p>
+      </div>
+      <button class="btn btn-primary" id="openAddBtn">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Add Employee
+      </button>
+    </header>
+
+    <!-- Stats -->
+    <section class="stats" id="stats">
+      <div class="stat-card stat-total">
+        <span class="stat-label">Total Employees</span>
+        <span class="stat-value" id="statTotal">0</span>
+      </div>
+      <div class="stat-card stat-active">
+        <span class="stat-label">Active</span>
+        <span class="stat-value" id="statActive">0</span>
+      </div>
+      <div class="stat-card stat-dept">
+        <span class="stat-label">Departments</span>
+        <span class="stat-value" id="statDept">0</span>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls">
+      <div class="search-field">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.7"/><path d="M14 14l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by name or email…">
+      </div>
+
+      <select id="deptFilter">
+        <option value="all">All departments</option>
+      </select>
+
+      <select id="statusFilter">
+        <option value="all">All statuses</option>
+        <option value="Active">Active</option>
+        <option value="On Leave">On Leave</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+
+      <select id="sortSelect">
+        <option value="name-asc">Name (A–Z)</option>
+        <option value="name-desc">Name (Z–A)</option>
+        <option value="joined-desc">Newest joined</option>
+        <option value="joined-asc">Oldest joined</option>
+      </select>
+    </section>
+
+    <!-- Table -->
+    <section class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th class="th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- rows injected by JS -->
+        </tbody>
+      </table>
+
+      <div class="empty-state" id="emptyState" hidden>
+        <p class="empty-title">No employees match this search</p>
+        <p class="empty-sub">Try a different name, or clear the filters above.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Add Employee</h2>
+      <button class="icon-btn" id="closeModalBtn" aria-label="Close">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <form id="employeeForm">
+      <input type="hidden" id="empId">
+
+      <label>
+        Full name
+        <input type="text" id="empName" required placeholder="e.g. Priya Nair">
+      </label>
+
+      <label>
+        Email
+        <input type="email" id="empEmail" required placeholder="e.g. priya@company.com">
+      </label>
+
+      <div class="form-row">
+        <label>
+          Department
+          <input type="text" id="empDept" required placeholder="e.g. Engineering" list="deptList">
+          <datalist id="deptList"></datalist>
+        </label>
+
+        <label>
+          Role
+          <input type="text" id="empRole" required placeholder="e.g. Frontend Developer">
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          Status
+          <select id="empStatus">
+            <option>Active</option>
+            <option>On Leave</option>
+            <option>Inactive</option>
+          </select>
+        </label>
+
+        <label>
+          Joined date
+          <input type="date" id="empJoined" required>
+        </label>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Add Employee</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="modal-overlay" id="deleteOverlay" hidden>
+  <div class="modal modal-sm">
+    <h2>Remove employee?</h2>
+    <p class="modal-text">This will permanently delete <strong id="deleteName"></strong> from the directory.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
